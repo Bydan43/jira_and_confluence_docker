@@ -14,7 +14,7 @@ services:
       - "TZ=Europe/Moscow"
       - JVM_MINIMUM_MEMORY=1024m
       - JVM_MAXIMUM_MEMORY=3072m
-      - ATL_PROXY_NAME=jira.tradesoft.ru
+      - ATL_PROXY_NAME=jira.server.ru
       - ATL_PROXY_PORT=443
       - ATL_TOMCAT_SCHEME=https
       - ATL_TOMCAT_SECURE=true
@@ -35,7 +35,7 @@ services:
       - "TZ=Europe/Moscow"
       - JVM_MINIMUM_MEMORY=1024m
       - JVM_MAXIMUM_MEMORY=3072m
-      - ATL_PROXY_NAME=confluence.tradesoft.ru
+      - ATL_PROXY_NAME=confluence.server.ru
       - ATL_PROXY_PORT=443
       - ATL_TOMCAT_SCHEME=https
       - ATL_TOMCAT_SECURE=true
@@ -55,7 +55,7 @@ services:
     ports: 
       - 3306:3306
     environment: 
-      MYSQL_ROOT_PASSWORD: O4y2Iw9BvQpUQjj
+      MYSQL_ROOT_PASSWORD: example
     volumes:
       - ./mysql-db:/var/lib/mysql
       - ./mysql-log:/var/log/mysql:rw
