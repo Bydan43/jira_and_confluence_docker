@@ -1,0 +1,3 @@
+
+FROM atlassian/confluence-server:7.2.1
+COPY mysql-connector-java-5.1.49.jar /opt/atlassian/confluence/confluence/WEB-INF/lib

@@ -1,0 +1,3 @@
+
+FROM atlassian/jira-servicedesk:4.3.0
+COPY mysql-connector-java-5.1.49.jar /opt/atlassian/jira/lib/

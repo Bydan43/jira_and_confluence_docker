@@ -1,0 +1,93 @@
+# Руководство для запуска jira в docker: https://hub.docker.com/r/atlassian/jira-server/
+# Руководство для запуска jira-servicedesk в docker: https://hub.docker.com/r/atlassian/jira-servicedesk/
+#
+
+
+version: '2.1'
+services:
+  servicedesk: 
+    container_name: servicedesk
+    hostname: servicedesk
+    build: ./servicedesk
+    restart: unless-stopped
+    environment:
+      - "TZ=Europe/Moscow"
+      - JVM_MINIMUM_MEMORY=1024m
+      - JVM_MAXIMUM_MEMORY=3072m
+      - ATL_PROXY_NAME=jira.tradesoft.ru
+      - ATL_PROXY_PORT=443
+      - ATL_TOMCAT_SCHEME=https
+      - ATL_TOMCAT_SECURE=true
+    volumes: 
+      - ./jirasd-log:/opt/atlassian/jira/logs
+      - ./jirasd-data:/var/atlassian/application-data/jira
+    #  - ./servicedesk/server.xml:/opt/atlassian/jira/conf/server.xml
+    networks: 
+      atlassian:
+        ipv4_address: 10.0.10.2
+
+  confluence:
+    container_name: confluence
+    hostname: confluence
+    build: ./confluence
+    restart: unless-stopped
+    environment:
+      - "TZ=Europe/Moscow"
+      - JVM_MINIMUM_MEMORY=1024m
+      - JVM_MAXIMUM_MEMORY=3072m
+      - ATL_PROXY_NAME=confluence.tradesoft.ru
+      - ATL_PROXY_PORT=443
+      - ATL_TOMCAT_SCHEME=https
+      - ATL_TOMCAT_SECURE=true
+    volumes:
+      - ./confluence-data:/var/atlassian/application-data/confluence
+    #  - ./confluence/server.xml:/opt/atlassian/jira/conf/server.xml
+    networks: 
+      atlassian:
+        ipv4_address: 10.0.10.3
+
+  mysql:
+    container_name: mysql
+    hostname: mysql
+    image: mysql:5.7.31
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    ports: 
+      - 3306:3306
+    environment: 
+      MYSQL_ROOT_PASSWORD: O4y2Iw9BvQpUQjj
+    volumes:
+      - ./mysql-db:/var/lib/mysql
+      - ./mysql-log:/var/log/mysql:rw
+      - ./mysql/init:/docker-entrypoint-initdb.d
+      - ./mysql/conf/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf:ro
+      - ./mysql-tmp:/tmp/mysql:rw
+    networks: 
+      atlassian:
+        ipv4_address: 10.0.10.4
+
+  nginx:
+    restart: unless-stopped
+    container_name: nginx
+    hostname: nginx
+    image: nginx:1.19.1
+    ports:
+      - 80:80
+      - 443:443
+    volumes: 
+      - ./nginx_conf/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx_conf/include:/etc/nginx/conf.d
+      - ./nginx_conf/cert:/etc/nginx/cert
+    networks: 
+      atlassian:
+        ipv4_address: 10.0.10.5
+        
+
+networks:
+  atlassian:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.0.10.0/24
+         gateway: 10.0.10.1
+

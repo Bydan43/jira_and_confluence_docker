@@ -1,0 +1,10 @@
+/jirasd-config
+/jirasd-data
+/jirasd-log
+/mysql-db
+/mysql-log
+/conflluence-data
+confluence-data/
+/conflluence-templates
+/mysql-tmp
+.list
